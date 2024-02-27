@@ -241,6 +241,8 @@ describe "Module#prepend" do
       B.prepend M
       B.foo.should == 'm'
     end
+  ensure
+    ModuleSpecs.send(:remove_const, :ConstUpdatePrepended)
   end
 
   it "updates the constant when a prepended module is updated" do
@@ -261,6 +263,8 @@ describe "Module#prepend" do
       M.const_set(:FOO, 'm')
       B.foo.should == 'm'
     end
+  ensure
+    ModuleSpecs.send(:remove_const, :ConstPrependedUpdated)
   end
 
   it "updates the constant when there is a base included constant and the prepended module overrides it" do
@@ -282,6 +286,8 @@ describe "Module#prepend" do
       A.prepend M
       A.foo.should == 'm'
     end
+  ensure
+    ModuleSpecs.send(:remove_const, :ConstIncludedPrependedOverride)
   end
 
   it "updates the constant when there is a base included constant and the prepended module is later updated" do
@@ -305,6 +311,8 @@ describe "Module#prepend" do
       M.const_set(:FOO, 'm')
       A.foo.should == 'm'
     end
+  ensure
+    ModuleSpecs.send(:remove_const, :ConstIncludedPrependedLaterUpdated)
   end
 
   it "updates the constant when a module prepended after a constant is later updated" do
@@ -328,6 +336,8 @@ describe "Module#prepend" do
       M.const_set(:FOO, 'm')
       B.foo.should == 'm'
     end
+  ensure
+    ModuleSpecs.send(:remove_const, :ConstUpdatedPrependedAfterLaterUpdated)
   end
 
   it "updates the constant when a module is prepended after another and the constant is defined later on that module" do
@@ -352,6 +362,8 @@ describe "Module#prepend" do
       N.const_set(:FOO, 'n')
       A.foo.should == 'n'
     end
+  ensure
+    ModuleSpecs.send(:remove_const, :ConstUpdatedPrependedAfterConstDefined)
   end
 
   it "updates the constant when a module is included in a prepended module and the constant is defined later" do
@@ -379,6 +391,8 @@ describe "Module#prepend" do
       N.const_set(:FOO, 'n')
       A.foo.should == 'n'
     end
+  ensure
+    ModuleSpecs.send(:remove_const, :ConstUpdatedIncludedInPrependedConstDefinedLater)
   end
 
   it "updates the constant when a new module with an included module is prepended" do
@@ -405,6 +419,8 @@ describe "Module#prepend" do
       B.prepend M
       B.foo.should == 'n'
     end
+  ensure
+    ModuleSpecs.send(:remove_const, :ConstUpdatedNewModuleIncludedPrepended)
   end
 
   it "raises a TypeError when the argument is not a Module" do
@@ -412,7 +428,11 @@ describe "Module#prepend" do
   end
 
   it "does not raise a TypeError when the argument is an instance of a subclass of Module" do
-    -> { ModuleSpecs::SubclassSpec.prepend(ModuleSpecs::Subclass.new) }.should_not raise_error(TypeError)
+    class ModuleSpecs::SubclassSpec::AClass
+    end
+    -> { ModuleSpecs::SubclassSpec::AClass.prepend(ModuleSpecs::Subclass.new) }.should_not raise_error(TypeError)
+  ensure
+    ModuleSpecs::SubclassSpec.send(:remove_const, :AClass)
   end
 
   it "imports constants" do
