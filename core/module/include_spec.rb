@@ -44,7 +44,11 @@ describe "Module#include" do
   end
 
   it "does not raise a TypeError when the argument is an instance of a subclass of Module" do
-    -> { ModuleSpecs::SubclassSpec.include(ModuleSpecs::Subclass.new) }.should_not raise_error(TypeError)
+    class ModuleSpecs::SubclassSpec::AClass
+    end
+    -> { ModuleSpecs::SubclassSpec::AClass.include(ModuleSpecs::Subclass.new) }.should_not raise_error(TypeError)
+  ensure
+    ModuleSpecs::SubclassSpec.send(:remove_const, :AClass)
   end
 
   it "imports constants to modules and classes" do
@@ -399,6 +403,8 @@ describe "Module#include" do
       M.const_set(:FOO, 'm')
       B.foo.should == 'm'
     end
+  ensure
+    ModuleSpecs.send(:remove_const, :ConstUpdated)
   end
 
   it "updates the constant when a module included after a call is later updated" do
@@ -425,6 +431,8 @@ describe "Module#include" do
       M.const_set(:FOO, 'm')
       B.foo.should == 'm'
     end
+  ensure
+    ModuleSpecs.send(:remove_const, :ConstLaterUpdated)
   end
 
   it "updates the constant when a module included in another module after a call is later updated" do
@@ -451,6 +459,8 @@ describe "Module#include" do
       M.const_set(:FOO, 'm')
       B.foo.should == 'm'
     end
+  ensure
+    ModuleSpecs.send(:remove_const, :ConstModuleLaterUpdated)
   end
 
   it "updates the constant when a nested included module is updated" do
@@ -479,6 +489,8 @@ describe "Module#include" do
       N.const_set(:FOO, 'n')
       B.foo.should == 'n'
     end
+  ensure
+    ModuleSpecs.send(:remove_const, :ConstUpdatedNestedIncludeUpdated)
   end
 
   it "updates the constant when a new module is included" do
@@ -503,6 +515,8 @@ describe "Module#include" do
       B.include(M)
       B.foo.should == 'm'
     end
+  ensure
+    ModuleSpecs.send(:remove_const, :ConstUpdatedNewInclude)
   end
 
   it "updates the constant when a new module with nested module is included" do
@@ -531,6 +545,8 @@ describe "Module#include" do
       B.include M
       B.foo.should == 'n'
     end
+  ensure
+    ModuleSpecs.send(:remove_const, :ConstUpdatedNestedIncluded)
   end
 
   it "overrides a previous super method call" do

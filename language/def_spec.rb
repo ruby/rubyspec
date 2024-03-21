@@ -514,6 +514,8 @@ describe "A nested method definition" do
 
     obj = DefSpecNested.new
     obj.inherited_method.should == obj
+  ensure
+    DefSpecNested.send(:remove_const, :TARGET)
   end
 
   # See http://yugui.jp/articles/846#label-3
@@ -535,6 +537,8 @@ describe "A nested method definition" do
 
     DefSpecNested.should_not have_instance_method :arg_method
     DefSpecNested.should_not have_instance_method :body_method
+  ensure
+    DefSpecNested.send(:remove_const, :OBJ)
   end
 
   it "creates an instance method inside Class.new" do

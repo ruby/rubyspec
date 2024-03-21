@@ -293,6 +293,8 @@ CODE
       eval(code)
       EvalSpecs.constants(false).should include(:"Vπ")
       EvalSpecs::Vπ.should == 3.14
+    ensure
+      EvalSpecs.send(:remove_const, :Vπ)
     end
 
     it "allows an emacs-style magic comment encoding" do
@@ -306,6 +308,8 @@ CODE
       eval(code)
       EvalSpecs.constants(false).should include(:"Vπemacs")
       EvalSpecs::Vπemacs.should == 3.14
+    ensure
+      EvalSpecs.send(:remove_const, :Vπemacs)
     end
 
     it "allows spaces before the magic encoding comment" do
@@ -319,6 +323,8 @@ CODE
       eval(code)
       EvalSpecs.constants(false).should include(:"Vπspaces")
       EvalSpecs::Vπspaces.should == 3.14
+    ensure
+      EvalSpecs.send(:remove_const, :Vπspaces)
     end
 
     it "allows a shebang line before the magic encoding comment" do
@@ -333,6 +339,8 @@ CODE
       eval(code)
       EvalSpecs.constants(false).should include(:"Vπshebang")
       EvalSpecs::Vπshebang.should == 3.14
+    ensure
+      EvalSpecs.send(:remove_const, :Vπshebang)
     end
 
     it "allows a shebang line and some spaces before the magic encoding comment" do
@@ -347,6 +355,8 @@ CODE
       eval(code)
       EvalSpecs.constants(false).should include(:"Vπshebang_spaces")
       EvalSpecs::Vπshebang_spaces.should == 3.14
+    ensure
+      EvalSpecs.send(:remove_const, :Vπshebang_spaces)
     end
 
     it "allows a magic encoding comment and a subsequent frozen_string_literal magic comment" do
@@ -363,6 +373,8 @@ CODE
       EvalSpecs::Vπstring.should == "frozen"
       EvalSpecs::Vπstring.encoding.should == Encoding::UTF_8
       EvalSpecs::Vπstring.frozen?.should be_true
+    ensure
+      EvalSpecs.send(:remove_const, :Vπstring)
     end
 
     it "allows a magic encoding comment and a frozen_string_literal magic comment on the same line in emacs style" do
@@ -378,6 +390,8 @@ CODE
       EvalSpecs::Vπsame_line.should == "frozen"
       EvalSpecs::Vπsame_line.encoding.should == Encoding::UTF_8
       EvalSpecs::Vπsame_line.frozen?.should be_true
+    ensure
+      EvalSpecs.send(:remove_const, :Vπsame_line)
     end
 
     it "ignores the magic encoding comment if it is after a frozen_string_literal magic comment" do
@@ -397,6 +411,8 @@ CODE
       value.should == "frozen"
       value.encoding.should == Encoding::BINARY
       value.frozen?.should be_true
+    ensure
+      EvalSpecs.send(:remove_const, binary_constant)
     end
 
     it "ignores the frozen_string_literal magic comment if it appears after a token and warns if $VERBOSE is true" do
